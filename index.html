@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ordenamiento a mano — 25.03 Algoritmos y Estructuras de Datos</title>
+<style>
+:root{
+  --paper:#F7F6F1;
+  --surface:#FFFFFF;
+  --grid:#DFDDD2;
+  --grid-strong:#CFCCBE;
+  --ink:#1C1D1A;
+  --ink-soft:#6B6B62;
+  --line:#DFDDD2;
+  --bar:#33526B;
+  --bar-ok:#3F7A4E;
+  --accent:#C2761B;
+  --hit:rgba(28,29,26,.05);
+  --radius:6px;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#17181A;
+    --surface:#1F2124;
+    --grid:#26282B;
+    --grid-strong:#32353A;
+    --ink:#EDEDE8;
+    --ink-soft:#9A9A93;
+    --line:#2E3135;
+    --bar:#6E9CC4;
+    --bar-ok:#7FB98C;
+    --accent:#E0A345;
+    --hit:rgba(237,237,232,.07);
+  }
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:2rem 1.25rem 3rem;
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:860px;margin:0 auto}
+header{border-bottom:1px solid var(--line);padding-bottom:1rem;margin-bottom:1.5rem}
+h1{margin:0;font-size:1.35rem;font-weight:600;letter-spacing:-0.01em}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 .35rem}
+.sub{margin:.4rem 0 0;color:var(--ink-soft);font-size:.9rem;max-width:60ch}
+
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1.25rem;margin-bottom:1.25rem}
+button{
+  font:inherit;font-size:.875rem;color:var(--ink);background:var(--surface);
+  border:1px solid var(--grid-strong);border-radius:var(--radius);
+  padding:.45rem .85rem;cursor:pointer;
+}
+button:hover{border-color:var(--ink-soft)}
+button:active{transform:translateY(1px)}
+button:disabled{opacity:.45;cursor:default;transform:none}
+.field{display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:var(--ink-soft)}
+.field output{font-family:var(--mono);color:var(--ink);min-width:1.5ch;text-align:right}
+input[type=range]{width:120px;accent-color:var(--bar)}
+
+.stage-wrap{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem 1rem .5rem}
+.stage{
+  position:relative;height:clamp(180px,34vw,260px);
+  display:flex;align-items:stretch;gap:0;
+  background-image:repeating-linear-gradient(to top,var(--grid) 0 1px,transparent 1px 25%);
+  border-bottom:2px solid var(--grid-strong);
+  touch-action:none;
+}
+.col{
+  flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;
+  cursor:grab;position:relative;padding:0 5px;border-radius:var(--radius);
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.col:hover{background:var(--hit)}
+.col:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.col.dragging{cursor:grabbing;z-index:5}
+.bar{background:var(--bar);border-radius:var(--radius) var(--radius) 0 0;transition:height .18s ease,background .15s ease}
+.col.mark .bar{background:var(--accent)}
+.col.tgt{background:var(--hit);box-shadow:inset 0 0 0 2px var(--ink)}
+.sorted .bar{background:var(--bar-ok)}
+.labels{display:flex;gap:0;padding-top:.4rem}
+.labels div{flex:1;min-width:0;padding:0 5px;text-align:center;font-family:var(--mono);font-size:.8rem;color:var(--ink-soft)}
+.labels div.mark{color:var(--accent);font-weight:600}
+
+.readout{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin:1rem 0 1.5rem}
+.count{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:.5rem .9rem;display:flex;align-items:baseline;gap:.6rem;flex:0 0 auto;
+}
+.count span{font-size:.78rem;color:var(--ink-soft)}
+.count b{font-family:var(--mono);font-size:1.4rem;font-weight:600;letter-spacing:-0.02em}
+.msg{font-size:.9rem;color:var(--ink-soft);margin:0}
+.msg.ok{color:var(--bar-ok);font-weight:600}
+
+.log-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:.5rem}
+.log-head h2{margin:0;font-size:.95rem;font-weight:600}
+.log{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  font-family:var(--mono);font-size:.8rem;line-height:1.8;
+  max-height:180px;overflow:auto;padding:.6rem .8rem;margin:0;color:var(--ink-soft);
+}
+.log li{list-style:none}
+.log li b{color:var(--ink);font-weight:600}
+.log .empty{font-style:italic}
+footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--ink-soft)}
+footer p{margin:.4rem 0}
+kbd{font-family:var(--mono);font-size:.75rem;border:1px solid var(--grid-strong);border-radius:4px;padding:.05em .35em;background:var(--paper)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media (max-width:540px){
+  .col{padding:0 2px}
+  .labels div{padding:0 2px;font-size:.7rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">25.03 · Algoritmos y estructuras de datos</p>
+  <h1>Ordenamiento a mano</h1>
+  <p class="sub">Arrastrá una barra sobre otra para intercambiarlas. Hacé clic en una barra para marcarla en verde, cuando esa posición ya quedó ordenada.</p>
+</header>
+
+<div class="controls">
+  <button id="mix">Mezclar</button>
+  <button id="undo" disabled>Deshacer</button>
+  <button id="clear" disabled>Limpiar marcas</button>
+  <div class="field">
+    <label for="n">Barras</label>
+    <input type="range" id="n" min="4" max="16" step="1" value="9">
+    <output id="n-out">9</output>
+  </div>
+</div>
+
+<div class="stage-wrap">
+  <div class="stage" id="stage" role="application" aria-label="Arreglo de barras. Flechas para moverte, Enter para marcar, Shift más flecha para intercambiar con la barra vecina."></div>
+  <div class="labels" id="labels" aria-hidden="true"></div>
+</div>
+
+<div class="readout">
+  <div class="count"><span>Intercambios</span><b id="s-swp">0</b></div>
+  <p class="msg" id="msg" role="status" aria-live="polite"></p>
+</div>
+
+<div class="log-head">
+  <h2>Registro de intercambios</h2>
+  <button id="copy">Copiar registro</button>
+</div>
+<ol class="log" id="log"><li class="empty">Todavía no hiciste ningún intercambio.</li></ol>
+
+<footer>
+  <p><b>Teclado:</b> <kbd>&larr;</kbd> <kbd>&rarr;</kbd> mueven el foco · <kbd>Enter</kbd> marca o desmarca · <kbd>Shift</kbd> + <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> intercambia con la barra vecina.</p>
+  <p><b>Marcas:</b> pertenecen a la posición, no al valor. Si intercambiás una barra marcada, la marca se queda donde estaba.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var stage = document.getElementById('stage');
+  var labels = document.getElementById('labels');
+  var msg = document.getElementById('msg');
+  var logEl = document.getElementById('log');
+  var nIn = document.getElementById('n');
+  var nOut = document.getElementById('n-out');
+  var undoBtn = document.getElementById('undo');
+  var clearBtn = document.getElementById('clear');
+  var swpOut = document.getElementById('s-swp');
+
+  var arr = [], marks = [], focusIdx = 0, swp = 0;
+  var log = [], history = [];
+
+  function snapshot(){
+    history.push({a:arr.slice(), k:marks.slice(), s:swp, l:log.slice()});
+    if (history.length > 200) history.shift();
+    undoBtn.disabled = false;
+  }
+
+  function isSorted(){
+    for (var i = 1; i < arr.length; i++) if (arr[i] < arr[i-1]) return false;
+    return true;
+  }
+
+  function shuffle(n){
+    arr = []; marks = [];
+    for (var i = 1; i <= n; i++){ arr.push(i); marks.push(false); }
+    for (var j = arr.length - 1; j > 0; j--){
+      var k = Math.floor(Math.random() * (j + 1));
+      var t = arr[j]; arr[j] = arr[k]; arr[k] = t;
+    }
+    if (isSorted() && arr.length > 1){
+      var a = arr[0]; arr[0] = arr[arr.length-1]; arr[arr.length-1] = a;
+    }
+    focusIdx = 0; swp = 0;
+    log = []; history = []; undoBtn.disabled = true;
+    render(); renderLog(); say('');
+  }
+
+  function say(text, ok){
+    msg.textContent = text;
+    msg.className = 'msg' + (ok ? ' ok' : '');
+  }
+
+  function renderLog(){
+    if (!log.length){
+      logEl.innerHTML = '<li class="empty">Todavía no hiciste ningún intercambio.</li>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < log.length; i++){
+      html += '<li><b>' + String(i+1).padStart(3,'0') + '</b>  ' + log[i] + '</li>';
+    }
+    logEl.innerHTML = html;
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function render(){
+    var done = isSorted() && arr.length > 1;
+    stage.innerHTML = '';
+    labels.innerHTML = '';
+    stage.classList.toggle('sorted', done);
+
+    for (var i = 0; i < arr.length; i++){
+      var col = document.createElement('div');
+      col.className = 'col' + (marks[i] ? ' mark' : '');
+      col.dataset.i = i;
+      col.tabIndex = (i === focusIdx) ? 0 : -1;
+      col.setAttribute('role', 'button');
+      col.setAttribute('aria-label',
+        'Posición ' + (i+1) + ', altura ' + arr[i] + (marks[i] ? ', marcada' : ''));
+
+      var bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.height = (Math.round((arr[i] / arr.length) * 88) + 12) + '%';
+      col.appendChild(bar);
+      stage.appendChild(col);
+
+      var lb = document.createElement('div');
+      if (marks[i]) lb.className = 'mark';
+      lb.textContent = arr[i];
+      labels.appendChild(lb);
+    }
+
+    swpOut.textContent = swp;
+    clearBtn.disabled = marks.indexOf(true) === -1;
+
+    if (done) say('Ordenado con ' + swp + ' intercambios.', true);
+  }
+
+  function focusCol(){
+    var el = stage.children[focusIdx];
+    if (el) el.focus({preventScroll:true});
+  }
+
+  function doSwap(i, j){
+    if (i === j) return;
+    snapshot();
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    swp++;
+    log.push('intercambio  ' + (i+1) + ' <-> ' + (j+1) + '  (' + arr[j] + ' <-> ' + arr[i] + ')');
+    focusIdx = j;
+    render(); renderLog();
+    if (!isSorted()) say('');
+    focusCol();
+  }
+
+  function toggleMark(i){
+    marks[i] = !marks[i];
+    focusIdx = i;
+    render(); focusCol();
+  }
+
+  var drag = null;
+
+  stage.addEventListener('pointerdown', function(e){
+    var col = e.target.closest('.col');
+    if (!col) return;
+    drag = {i: +col.dataset.i, x: e.clientX, el: col, moved: false, to: +col.dataset.i, slots: []};
+    for (var s = 0; s < stage.children.length; s++){
+      var sr = stage.children[s].getBoundingClientRect();
+      drag.slots.push(sr.left + sr.width / 2);
+    }
+    focusIdx = drag.i;
+    try { col.setPointerCapture(e.pointerId); } catch(err){}
+  });
+
+  stage.addEventListener('pointermove', function(e){
+    if (!drag) return;
+    var dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 7) return;
+    drag.moved = true;
+    drag.el.classList.add('dragging');
+    drag.el.style.transform = 'translateX(' + dx + 'px)';
+    var best = drag.i, bestDist = Infinity;
+    for (var k = 0; k < drag.slots.length; k++){
+      var d = Math.abs(e.clientX - drag.slots[k]);
+      if (d < bestDist){ bestDist = d; best = k; }
+    }
+    drag.to = best;
+    for (var q = 0; q < stage.children.length; q++){
+      stage.children[q].classList.toggle('tgt', q === best && q !== drag.i);
+    }
+  });
+
+  function endDrag(){
+    if (!drag) return;
+    var d = drag; drag = null;
+    d.el.style.transform = '';
+    d.el.classList.remove('dragging');
+    if (d.moved){
+      if (d.to !== d.i) doSwap(d.i, d.to);
+      else { render(); focusCol(); }
+    } else {
+      toggleMark(d.i);
+    }
+  }
+
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', function(){
+    if (drag){ drag.el.style.transform = ''; drag.el.classList.remove('dragging'); drag = null; render(); }
+  });
+
+  stage.addEventListener('keydown', function(e){
+    var col = e.target.closest('.col');
+    if (!col) return;
+    var i = +col.dataset.i;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+      e.preventDefault();
+      var next = i + (e.key === 'ArrowRight' ? 1 : -1);
+      if (next < 0 || next >= arr.length) return;
+      if (e.shiftKey){ doSwap(i, next); }
+      else { focusIdx = next; render(); focusCol(); }
+    } else if (e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      toggleMark(i);
+    }
+  });
+
+  document.getElementById('mix').addEventListener('click', function(){ shuffle(+nIn.value); });
+
+  nIn.addEventListener('input', function(){
+    nOut.textContent = nIn.value;
+    shuffle(+nIn.value);
+  });
+
+  undoBtn.addEventListener('click', function(){
+    if (!history.length) return;
+    var h = history.pop();
+    arr = h.a; marks = h.k; swp = h.s; log = h.l;
+    undoBtn.disabled = history.length === 0;
+    render(); renderLog(); say('');
+  });
+
+  clearBtn.addEventListener('click', function(){
+    for (var i = 0; i < marks.length; i++) marks[i] = false;
+    render();
+  });
+
+  document.getElementById('copy').addEventListener('click', function(){
+    var text = log.length
+      ? log.map(function(l, i){ return String(i+1).padStart(3,'0') + '  ' + l; }).join('\n')
+      : 'Sin intercambios.';
+    text += '\n\nTotal de intercambios: ' + swp;
+    var btn = this;
+    function done(ok){
+      btn.textContent = ok ? 'Copiado' : 'No se pudo copiar';
+      setTimeout(function(){ btn.textContent = 'Copiar registro'; }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ done(false); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(true); } catch(err){ done(false); }
+      document.body.removeChild(ta);
+    }
+  });
+
+  shuffle(9);
+})();
+</script>
+</body>
+</html>
