@@ -4,7 +4,7 @@ Herramienta para enseñar algoritmos de ordenamiento ejecutándolos a mano. Mues
 
 Pensada para **25.03 — Algoritmos y Estructuras de Datos**, Ingeniería Electrónica, ITBA.
 
-![Bars](bars.png)
+[![Captura de sorttoy: barras de distintas alturas, algunas marcadas en ámbar](bars.png)](https://mressl-itba.github.io/sorttoy/)
 
 **Demo:** <https://mressl-itba.github.io/sorttoy/>
 
