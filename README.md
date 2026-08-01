@@ -10,7 +10,7 @@ Pensada para **25.03 — Algoritmos y Estructuras de Datos**, Ingeniería Electr
 
 ## Por qué
 
-Los visualizadores de ordenamiento que hay dando vueltas animan el algoritmo solos: el alumno mira una animación y no ejecuta nada. Acá pasa lo contrario. Cada intercambio lo hace una persona, con la mano, y el contador registra cuántos hicieron falta. Eso convierte la clase en una ejecución paso a paso en lugar de una demostración pasiva, y deja un número concreto para contrastar contra la cota teórica del algoritmo.
+Los visualizadores de ordenamiento habituales animan el algoritmo solos: el alumno mira una animación y no ejecuta nada. Aquí ocurre lo contrario. Cada intercambio lo hace una persona, con la mano, y el contador registra cuántos hicieron falta. Eso convierte la clase en una ejecución paso a paso en lugar de una demostración pasiva, y deja un número concreto para contrastar contra la cota teórica del algoritmo.
 
 ## Uso
 
@@ -21,7 +21,7 @@ Dos gestos, sin modos:
 | Arrastrar una barra sobre otra | Las intercambia |
 | Clic sobre una barra | La marca o desmarca en ámbar |
 
-Las marcas sirven para señalar el tramo del arreglo que ya está resuelto: el prefijo en selection sort, el sufijo en bubble sort. **Pertenecen a la posición, no al valor**, así que si intercambiás una barra marcada la marca se queda donde estaba.
+Las marcas sirven para señalar el tramo del arreglo que ya está resuelto: el prefijo en selection sort, el sufijo en bubble sort. **Pertenecen a la posición, no al valor**, así que si intercambias una barra marcada la marca se queda donde estaba.
 
 Cuando el arreglo queda completamente ordenado, todas las barras pasan a verde.
 
@@ -52,15 +52,15 @@ El modo teclado sirve para proyectar sin depender del mouse, y hace que la herra
 
 ## Ejecutar y publicar
 
-Es un único archivo HTML sin dependencias: no carga fuentes, ni CDNs, ni bibliotecas. Anda offline abriéndolo con doble clic, y sigue el modo claro u oscuro del sistema.
+Es un único archivo HTML sin dependencias: no carga fuentes, ni CDNs, ni bibliotecas. Funciona sin conexión abriéndolo con doble clic, y sigue el modo claro u oscuro del sistema.
 
 Para publicarlo con GitHub Pages:
 
-1. Poné `ordenamiento-manual.html` en la raíz del repo con el nombre `index.html`.
-2. En **Settings → Pages**, elegí la rama `main` y la carpeta `/ (root)`.
+1. Coloca `index.html` en la raíz del repositorio.
+2. En **Settings → Pages**, elige la rama `main` y la carpeta `/ (root)`.
 3. En un par de minutos queda disponible en `https://<usuario>.github.io/<repo>/`.
 
-Si preferís tenerlo junto a otros materiales sin crear un repo aparte, poné el archivo en `docs/` y elegí `main` + `/docs` en Pages.
+Si prefieres tenerlo junto a otros materiales sin crear un repositorio aparte, coloca el archivo en `docs/` y elige `main` + `/docs` en Pages.
 
 > El botón de copiar registro usa la Clipboard API, que requiere contexto seguro. Publicado por HTTPS funciona directo; abierto con `file://` cae a un método alternativo que también funciona.
 
@@ -69,10 +69,12 @@ Si preferís tenerlo junto a otros materiales sin crear un repo aparte, poné el
 ```
 .
 ├── index.html    # la herramienta completa: markup, estilos y lógica
+├── bars.png      # captura usada en este README
+├── LICENSE
 └── README.md
 ```
 
-Todo el código está en ese archivo, sin proceso de build. Los colores salen de variables CSS declaradas en `:root`, con overrides en el bloque `@media (prefers-color-scheme: dark)`, así que se retematiza tocando solo esa parte.
+Todo el código está en ese archivo, sin proceso de compilación. Los colores salen de variables CSS declaradas en `:root`, con redefiniciones en el bloque `@media (prefers-color-scheme: dark)`, así que se cambia el tema modificando solo esa parte.
 
 ## Licencia
 
