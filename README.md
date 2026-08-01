@@ -1,10 +1,10 @@
-![Bars](bars.png)
-
 # Sorttoy
 
 Herramienta para enseñar algoritmos de ordenamiento ejecutándolos a mano. Muestra un arreglo de barras desordenadas que se intercambian arrastrando, y permite marcar las posiciones que ya quedaron ordenadas.
 
 Pensada para **25.03 — Algoritmos y Estructuras de Datos**, Ingeniería Electrónica, ITBA.
+
+![Bars](bars.png)
 
 **Demo:** <https://mressl-itba.github.io/sorttoy/>
 
