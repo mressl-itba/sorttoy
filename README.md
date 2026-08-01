@@ -1,10 +1,12 @@
+![Bars](bars.png)
+
 # Sorttoy
 
 Herramienta para enseñar algoritmos de ordenamiento ejecutándolos a mano. Muestra un arreglo de barras desordenadas que se intercambian arrastrando, y permite marcar las posiciones que ya quedaron ordenadas.
 
 Pensada para **25.03 — Algoritmos y Estructuras de Datos**, Ingeniería Electrónica, ITBA.
 
-**Demo:** https://mressl-itba.github.io/ordenamiento/
+**Demo:** <https://mressl-itba.github.io/sorttoy/>
 
 ## Por qué
 
@@ -15,7 +17,7 @@ Los visualizadores de ordenamiento que hay dando vueltas animan el algoritmo sol
 Dos gestos, sin modos:
 
 | Gesto | Efecto |
-|---|---|
+| --- | --- |
 | Arrastrar una barra sobre otra | Las intercambia |
 | Clic sobre una barra | La marca o desmarca en ámbar |
 
@@ -34,7 +36,7 @@ Cuando el arreglo queda completamente ordenado, todas las barras pasan a verde.
 ### Teclado
 
 | Tecla | Efecto |
-|---|---|
+| --- | --- |
 | <kbd>&larr;</kbd> <kbd>&rarr;</kbd> | Mueven el foco entre barras |
 | <kbd>Enter</kbd> | Marca o desmarca la barra enfocada |
 | <kbd>Shift</kbd> + <kbd>&larr;</kbd> / <kbd>&rarr;</kbd> | Intercambia con la barra vecina |
